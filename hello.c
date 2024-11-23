@@ -51,3 +51,18 @@ static int __init hello_init(void)
 
 	return 0;
 }
+
+static void __exit hello_exit(void)
+{
+	struct hello_entry *entry, *tmp;
+
+	list_for_each_entry_safe(entry, tmp, &hello_list, list)
+	{
+		printk(KERN_INFO "Time: %lld ns\n", ktime_to_ns(entry->time));
+		list_del(&entry->list);
+		kfree(entry);
+	}
+}
+
+module_init(hello_init);
+module_exit(hello_exit);
